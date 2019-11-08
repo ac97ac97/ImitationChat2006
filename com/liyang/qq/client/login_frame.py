@@ -2,7 +2,7 @@
 import json
 
 from com.liyang.qq.client.my_frame import *
-
+from com.liyang.qq.client.friends_frame import FriendsFrame
 class LoginFrame(MyFrame):
     def __init__(self):
         super().__init__(title='QQ 登录',size=(340,255))
@@ -71,11 +71,11 @@ class LoginFrame(MyFrame):
         account = self.accountid_txt.GetValue()
         password = self.password_txt.GetValue()
         user=self.login(account,password)
+        #加入线程后修改此处if语句
         if user is not None:
-
             logger.info('登录成功')
-            # next_frame=FriendsFrame(user)
-            # next_frame.Show()
+            next_frame=FriendsFrame(user)
+            next_frame.Show()
             self.Hide()
 
         else:
