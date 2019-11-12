@@ -93,9 +93,22 @@ class ChatFrame(MyFrame):
                     # 刷新好友列表
                     self.friendsframe.refreshfriendList(userids)
                 else:  # 接收聊天信息
-                    # 接收聊天信息
-                    pass
+                    #获得当前时间，并格式化
+                    now=datetime.datetime.today()
+                    strnow = now.strftime('%Y-%m-%d %H:%M:%S')
+                    #在消息查看框中显示消息
+                    message=json_obj['message']
+                    log='#{0}#\n{1}对您说: {2}\n'.format(strnow, self.friend['user_name'],message)
+                    self.msglog +=log
+                    self.seemsg_tc.SetValue(self.msglog)
+                    #光标移至最后一行
+                    self.seemsg_tc.SetInsertionPointEnd()
+
+
+
             except Exception:
+                #出现异常 休眠2s 再接收数据
+                # time.sleep(2)
                 continue
 
     # 接收消息

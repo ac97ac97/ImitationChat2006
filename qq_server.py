@@ -80,11 +80,30 @@ while True:
                 #给客户端发数据
                 server_socket.sendto(json_str.encode(),client_address)
         elif command == COMMAND_SENDMSG: #用户发送消息
-            #用户发送消息
-            pass
+            #获得好友id
+            fduserid=json_obj['receive_user_id']
+            #向客户端发送数据
+            #在clientlist查询好友id
+            filter_clientinfo=filter(lambda it:it[0]==fduserid,clientlist)
+            clientinfo=list(filter_clientinfo)
+            if len(clientinfo) == 1:
+                _,client_address=clientinfo[0]
+                #向服务端转发消息给客户端
+                #json编码
+                json_str=json.dumps(json_obj)
+                server_socket.sendto(json_str.encode(),client_address)
+
         elif command == COMMAND_LOGOUT: #用户发送下线命令
             #用户发送下线命令
-            pass
+            #获得用户id
+            userid=json_obj['userid']
+            for clientinfo in clientlist:
+                cuserid,_=clientinfo
+                if cuserid == userid:
+                    #从clientlist列表中删除用哪户
+                    clientlist.remove(clientinfo)
+                    break
+            logger.info(clientlist)
         #刷新用户列表
         #如果clientlist中没有元素则跳到下一次循环
         if len(clientlist)==0:

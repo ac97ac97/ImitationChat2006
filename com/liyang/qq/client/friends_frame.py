@@ -81,6 +81,29 @@ class FriendsFrame(MyFrame):
             box.Add(toppannel, -1, wx.CENTER | wx.EXPAND)
             box.Add(panel, -1, wx.CENTER | wx.EXPAND)
             self.contentpanel.SetSizer(box)
+    def OnClose(self,event):
+        if self.chatFrame is not None and self.chatFrame.IsShown():
+            dlg=wx.MessageDialog(self,'请先关闭聊天窗口，然后在关闭好友列表窗口','操作失败',wx.OK |wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        #当用户下线，给服务器发送下线消息
+        json_obj={}
+        json_obj['command']=COMMAND_LOGOUT
+        json_obj['user_id']=self.user['user_id']
+
+        #json编码
+        json_str = json.dumps(json_obj)
+        # 给服务器端发送数据
+        client_socket.sendto(json_str.encode(),server_address)
+
+        #停止当前子线程
+        self.isrunning=False
+        self.t1.join()
+        self.t1=None
+        #关闭窗口并且退出系统
+        super().OnClose(event)
+
 
     def on_dclick(self, event):
         # 获得选中friends的好友索引
